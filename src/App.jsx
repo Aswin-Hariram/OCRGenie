@@ -21,6 +21,7 @@ function App() {
         threshold={0.2}
         rootMargin="-50px"
         onLetterAnimationComplete={handleAnimationComplete}
+        styles={{ color: 'red', fontWeight: 'bold',fontSize: '30px' }}
       />
     </div>
   )
