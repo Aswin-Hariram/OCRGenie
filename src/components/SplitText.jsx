@@ -76,7 +76,9 @@ const SplitText = ({
                         ...styles, // Merging provided styles with animation props
                         display: 'inline-block',
                         willChange: 'transform, opacity',
-                        
+                        fontSize:'50px',
+                        fontFamily:'arial',
+                        fontWeight:'800'
                     }}
                 >
                     {letters[index] === ' ' ? '\u00A0' : letters[index]}
