@@ -22,3 +22,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+
+Backend/config/
+Backend/venv/
+Backend/ocrKey.json
+
+/src/Config/GemKey.js

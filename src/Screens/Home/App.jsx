@@ -6,24 +6,19 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 import { GiMagicLamp } from "react-icons/gi";
 import { Input, Typography } from '@mui/material';
 import DND from '../../components/DND';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 
 const App = () => {
   const [isScanning, setIsScanning] = useState(false);
   const [h1Completed, setH1Completed] = useState(false);
   const [showLinkBox, setShowLinkBox] = useState(false);
-
+  
   return (
     <div className="app-container">
-      <ParticlesComponent />
-      {/* Add ParticlesComponent for global background */}
-      <SplashCursor />
-      <NavBar />
+    
+    
       <MainContainer />
-
-      {/* Features Section with Particles Background */}
-      <DND />
-
 
     </div>
   )
@@ -48,6 +43,7 @@ function NavBar() {
 }
 
 function MainContainer() {
+  const navigate = useNavigate();
   return (
     <section className="hero min-h-screen flex items-center justify-center text-white">
       <div className="content">
@@ -62,12 +58,21 @@ function MainContainer() {
             <p className="px-8 mt-8 mb-12 text-2xl">
               Seamlessly transform images and PDFs into editable text in seconds.
             </p>
-            <div className="flex flex-wrap justify-center">
-              <button className="ripple-btn px-8 py-3 m-2 text-lg font-semibold rounded dark:bg-violet-600 dark:text-gray-50">
-                Get started
+            <div className="flex flex-wrap justify-center gap-4">
+              <button 
+                className="ripple-btn px-8 py-3 m-2 text-lg font-semibold rounded dark:bg-violet-600 dark:text-gray-50 hover:bg-violet-700 transition-colors duration-300 flex items-center"
+                onClick={() => navigate("/DND")}
+              >
+                <span className="mr-2">Get started</span>
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
               </button>
 
-              <button className="flex items-center px-8 py-3 m-2 text-lg border rounded light:text-gray-900 dark:border-gray-300">
+              <button 
+                className="flex items-center px-8 py-3 m-2 text-lg border rounded light:text-gray-900 dark:border-gray-300 hover:bg-gray-800 transition-colors duration-300"
+                onClick={() => window.open('https://github.com/aswin-hariram', '_blank')}
+              >
                 <GitHubIcon className="mr-2" /> GitHub
               </button>
             </div>
