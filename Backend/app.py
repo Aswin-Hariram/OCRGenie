@@ -1,8 +1,9 @@
 import os
 import base64
-import asyncio
+import uvicorn
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from typing import Optional
@@ -10,6 +11,12 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.messages import HumanMessage
 
 app = FastAPI()
+
+@app.get("/")
+async def health_check():
+    """Health check endpoint to verify the API is running."""
+    return {"status": "ok", "message": "OCRGenie API is running"}
+
 
 # CORS middleware to allow requests from frontend
 app.add_middleware(
