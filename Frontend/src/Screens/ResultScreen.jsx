@@ -3,7 +3,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Box, Snackbar, Alert } from "@mui/material";
 import ResultHeader from './components/ResultHeader';
 import ResultList from './components/ResultList';
-import TranslationDialog from './components/TranslationDialog';
 import { useResultScreen } from './hooks/useResultScreen';
 
 function ResultScreen() {
@@ -20,21 +19,21 @@ function ResultScreen() {
         snackbarSeverity,
         searchQuery,
         fontSize,
-        translateDialogOpen,
+      
+
         selectedText,
         handleTextBoxChange,
         handleCopy,
         handleSave,
         handleShare,
-        handleTranslate,
-        handleTranslateConfirm,
+       
         handleCloseSnackbar,
         setSearchQuery,
         setFontSize,
-        setTranslateDialogOpen,
         setSelectedText,
         toggleExpanded,
-        showSnackbar
+       
+       
     } = useResultScreen(fileData);
 
     // Filter files based on search query
@@ -80,7 +79,7 @@ function ResultScreen() {
                     setSearchQuery={setSearchQuery}
                     fontSize={fontSize}
                     setFontSize={setFontSize}
-                    onTranslate={handleTranslate}
+                    
                     onShare={handleShare}
                     onSave={handleSave}
                     onNavigateHome={() => navigate("/")}
@@ -98,12 +97,7 @@ function ResultScreen() {
                 />
             </Box>
 
-            <TranslationDialog
-                open={translateDialogOpen}
-                onClose={() => setTranslateDialogOpen(false)}
-                onConfirm={handleTranslateConfirm}
-                selectedText={selectedText}
-            />
+          
 
             <Snackbar
                 open={snackbarOpen}

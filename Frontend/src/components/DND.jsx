@@ -14,15 +14,14 @@ import { IoCloudUpload } from "react-icons/io5";
 import { IoMdCloseCircle } from "react-icons/io";
 import { LuScanText } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { GEM_KEY } from "../Config/GemKey";
+
 
 function DND() {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [disabled, setDisabled] = useState(false);
-  const [ocrProgress, setOcrProgress] = useState(0); // Track OCR progress
+  const [ocrProgress, setOcrProgress] = useState(0); // Track progress
 
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
@@ -31,7 +30,6 @@ function DND() {
     .map((ext) => `.${ext}`)
     .join(",");
 
-  const GEMINI_KEY = GEM_KEY // Replace with your actual key
 
   const handleFileChange = (event) => {
     const newFilesArray = Array.from(event.target.files);
@@ -87,87 +85,68 @@ function DND() {
     setSelectedFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
   }, []);
 
-  const fixData = async (text) => {
-    try {
-      const promptMsg = `${text}\n\nFix my OCR detected text without adding any new data.`;
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_KEY}`;
-      const payload = {
-        contents: [
-          {
-            parts: [{ text: promptMsg }],
-          },
-        ],
-      };
-
-      const response = await axios.post(url, payload, {
-        headers: { "Content-Type": "application/json" },
-      });
-
-      return response.data.candidates?.[0]?.content?.parts?.[0]?.text || "No content generated.";
-    } catch (err) {
-      console.error("Error while processing text with Gemini:", err);
-      throw new Error("Failed to process text with Gemini.");
-    }
-  };
-
-  const getOcr = async (formData, fileIndex) => {
-    try {
-      // Update progress to 0 when starting
-      setSelectedFiles(prevFiles => {
-        const updatedFiles = [...prevFiles];
-        updatedFiles[fileIndex] = {
-          ...updatedFiles[fileIndex],
-          Percentage: 0
-        };
-        return updatedFiles;
-      });
-
-      const response = await fetch("http://127.0.0.1:5001/detect-text", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) {
-        const errorResponse = await response.json();
-        throw new Error(errorResponse.error || "Something went wrong with OCR detection!");
-      }
-
-      const data = await response.json();
-      const fixedText = await fixData(data.detected_text);
-
-      // Update progress to 100 and set extracted text
-      setSelectedFiles(prevFiles => {
-        const updatedFiles = [...prevFiles];
-        updatedFiles[fileIndex] = {
-          ...updatedFiles[fileIndex],
-          Percentage: 100,
-          extractedText: fixedText
-        };
-        return updatedFiles;
-      });
-
-      // Calculate overall progress
-      const completedFiles = selectedFiles.filter(file => file.Percentage === 100).length;
-      const progress = (completedFiles / selectedFiles.length) * 100;
-      setOcrProgress(progress);
-
-      return fixedText; // Return the fixed text
-
-    } catch (err) {
-      console.error("OCR Error:", err.message);
-      setError(err.message || "An error occurred during OCR processing.");
+  const getOcr = async (file, fileIndex) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
       
-      // Reset progress on error
-      setSelectedFiles(prevFiles => {
-        const updatedFiles = [...prevFiles];
-        updatedFiles[fileIndex] = {
-          ...updatedFiles[fileIndex],
-          Percentage: 0
-        };
-        return updatedFiles;
-      });
-      throw err; // Rethrow the error
-    }
+      reader.onload = async (event) => {
+        try {
+          // Convert file to base64
+          const base64String = event.target.result.split(',')[1];
+          const fileExtension = file.name.split('.').pop().toLowerCase();
+          
+          // Call the backend API
+          const response = await fetch('http://localhost:8000/api/ocr', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              image_base64: base64String,
+              image_format: fileExtension
+            }),
+          });
+          
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          
+          // Parse the JSON response
+          const result = await response.json();
+          
+          // Check for error in response
+          if (result.status === 'error') {
+            throw new Error(result.message || 'Error during OCR processing');
+          }
+          
+          // Update the UI with the result
+          setSelectedFiles(prev => {
+            const newFiles = [...prev];
+            if (newFiles[fileIndex]) {
+              newFiles[fileIndex] = {
+                ...newFiles[fileIndex],
+                Percentage: 100,
+                extractedText: result.data
+              };
+            }
+            return newFiles;
+          });
+          
+          resolve(result.data);
+        } catch (error) {
+          console.error('OCR processing error:', error);
+          reject(`Error processing OCR: ${error.message}`);
+        }
+      };
+      
+      reader.onerror = (error) => {
+        console.error('File reading error:', error);
+        reject('Error reading file');
+      };
+      
+      // Read the file as data URL
+      reader.readAsDataURL(file);
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -186,24 +165,45 @@ function DND() {
       // Process files sequentially and collect results
       const processedFiles = [];
       for (let i = 0; i < selectedFiles.length; i++) {
-        const formData = new FormData();
-        formData.append("image", selectedFiles[i].file);
-        const extractedText = await getOcr(formData, i);
-        
-        processedFiles.push({
-          file: selectedFiles[i].file,
-          Percentage: 100,
-          extractedText: extractedText
-        });
+        try {
+          // Update progress before starting OCR
+          setOcrProgress((i / selectedFiles.length) * 100);
+          
+          // Process OCR
+          const extractedText = await getOcr(selectedFiles[i].file, i);
+          
+          processedFiles.push({
+            file: selectedFiles[i].file,
+            Percentage: 100,
+            extractedText: extractedText
+          });
+          
+          // Update progress after successful OCR
+          const progress = ((i + 1) / selectedFiles.length) * 100;
+          setOcrProgress(progress);
+          
+          // Update UI with processed file
+          setSelectedFiles([...processedFiles]);
+          
+        } catch (err) {
+          console.error(`Error processing file ${selectedFiles[i].file.name}:`, err);
+          // Continue with next file even if one fails
+          continue;
+        }
       }
 
-      // Update the state with processed files
-      setSelectedFiles(processedFiles);
-
-      // Navigate with the processed files
-      navigate("/result-screen", { state: { fileData: processedFiles } });
+      // Only navigate if we have at least one successfully processed file
+      if (processedFiles.length > 0) {
+        navigate("/result-screen", { state: { fileData: processedFiles } });
+      } else {
+        setError("Failed to process any files. Please try again.");
+        setLoading(false);
+        setDisabled(false);
+      }
+      
     } catch (err) {
-      setError(err.message || "An error occurred during processing");
+      console.error('Unexpected error:', err);
+      setError(err.message || "An unexpected error occurred during processing");
       setLoading(false);
       setDisabled(false);
     }

@@ -1,4 +1,7 @@
-import { List, ListItem, Card, CardContent, Box, Typography, IconButton, Tooltip, Chip, Divider, TextField, CardMedia } from "@mui/material";
+import { 
+    List, ListItem, Card, CardContent, Box, Typography, 
+    IconButton, Tooltip, Chip, Divider, TextField, CardMedia
+} from "@mui/material";
 import { FileUpload } from '@mui/icons-material';
 import { IoCopy } from "react-icons/io5";
 import { RiExpandDiagonalLine } from "react-icons/ri";
@@ -13,6 +16,7 @@ function ResultList({
     onToggleExpanded,
     onTextSelect
 }) {
+
     return (
         <List sx={{ width: "100%" }}>
             {filteredFiles.map((fileObj, index) => (

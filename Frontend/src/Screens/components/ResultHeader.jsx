@@ -1,17 +1,39 @@
-import { Box, Typography, TextField, Select, MenuItem, IconButton, Button, Tooltip } from "@mui/material";
-import { Save, Share, Translate, Search } from '@mui/icons-material';
+import { Box, Typography, TextField, Select, MenuItem, IconButton, Button, Tooltip, FormControl, InputLabel, CircularProgress } from "@mui/material";
+import { Save, Share, Translate, Search, Language } from '@mui/icons-material';
 import { HiOutlineArrowUturnLeft } from "react-icons/hi2";
+import { useState } from 'react';
+import { LANGUAGES } from '../../utils/constants';
 
 function ResultHeader({
     searchQuery,
     setSearchQuery,
     fontSize,
     setFontSize,
-    onTranslate,
-    onShare,
-    onSave,
-    onNavigateHome
+    onTranslate = () => {},
+    onShare = () => {},
+    onSave = () => {},
+    onNavigateHome = () => {},
+    onTranslateAll = () => {}
 }) {
+    const [translating, setTranslating] = useState(false);
+    const [targetLanguage, setTargetLanguage] = useState('');
+
+    const handleLanguageChange = async (e) => {
+        const lang = e.target.value;
+        if (!lang) return;
+        
+        setTargetLanguage(lang);
+        setTranslating(true);
+        
+        try {
+            await onTranslateAll(lang);
+        } catch (error) {
+            console.error('Translation error:', error);
+        } finally {
+            setTranslating(false);
+            setTargetLanguage('');
+        }
+    };
     return (
         <Box
             sx={{
@@ -72,11 +94,7 @@ function ResultHeader({
                         <MenuItem value={16}>Large</MenuItem>
                     </Select>
                 </Tooltip>
-                <Tooltip title="Translate">
-                    <IconButton onClick={onTranslate} sx={{ color: 'white' }}>
-                        <Translate />
-                    </IconButton>
-                </Tooltip>
+               
                 <Tooltip title="Share">
                     <IconButton onClick={onShare} sx={{ color: 'white' }}>
                         <Share />

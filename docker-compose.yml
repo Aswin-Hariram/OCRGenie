@@ -3,28 +3,30 @@ version: '3.8'
 services:
   frontend:
     build:
-      context: .
+      context: ./Frontend
       dockerfile: Dockerfile
     ports:
-      - "80:80"
+      - "3000:80"
     depends_on:
       - backend
+    restart: unless-stopped
     networks:
-      - app-network
+      - ocr-network
 
   backend:
     build:
       context: ./Backend
       dockerfile: Dockerfile
     ports:
-      - "5001:5001"
-    environment:
-      - FLASK_ENV=development
+      - "8000:8000"
     volumes:
-      - ./Backend/ocrKey.json:/app/ocrKey.json
+      - ./Backend:/app
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
     networks:
-      - app-network
+      - ocr-network
 
 networks:
-  app-network:
-    driver: bridge 
+  ocr-network:
+    driver: bridge

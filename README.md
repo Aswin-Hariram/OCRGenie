@@ -1,229 +1,201 @@
-# OCRGenie 🔮
+# 🧞‍♂️ OCRGenie
 
 <div align="center">
-
-![OCRGenie Logo](https://img.shields.io/badge/OCRGenie-Smart%20Text%20Recognition-blue?style=for-the-badge)
-
-[![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
-[![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
-[![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
-[![Google Cloud](https://img.shields.io/badge/Google_Cloud-4285F4?style=for-the-badge&logo=google-cloud&logoColor=white)](https://cloud.google.com/)
-
-Transform images into actionable text with the power of AI! 🚀
-
-[Getting Started](#getting-started) •
-[Features](#features) •
-[Configuration](#configuration) •
-[Troubleshooting](#troubleshooting)
-
+  <p>
+    <img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=white" alt="React" />
+    <img src="https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white" alt="FastAPI" />
+    <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker" />
+    <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python" />
+    <img src="https://img.shields.io/badge/Google_Gemini-4285F4?style=for-the-badge&logo=google&logoColor=white" alt="Google Gemini" />
+  </p>
 </div>
 
-## ✨ Features
+OCRGenie is a powerful document processing application that extracts text from images using Google's Gemini AI. It provides a user-friendly interface for uploading documents and receiving accurate text extraction results in real-time.
 
-- 📷 Advanced OCR powered by Google Cloud Vision API
-- 🤖 Smart text processing with Google's Gemini AI
-- 📱 SMS notifications via Twilio
-- ⚡ Lightning-fast React frontend
-- 🎨 Beautiful and intuitive user interface
-- 🔒 Secure credential management
+## 🚀 Features
 
-## 🚀 Getting Started
+- **Image to Text Extraction** - Extract text from various image formats
+- **Multi-language Support** - Supports multiple languages for text extraction
+- **Real-time Processing** - Get instant results with progress updates
+- **Responsive Design** - Works on desktop and mobile devices
+- **Docker Support** - Easy deployment with Docker
 
-### Prerequisites
+## 📦 Prerequisites
 
-Before you begin, ensure you have:
-- Node.js (v16 or higher)
-- Python (v3.8 or higher)
-- Git
-- Access to Google Cloud Console
-- Twilio Account
-- Google AI Studio Account
+- [Git](https://git-scm.com/)
+- [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/install/)
+- [Node.js](https://nodejs.org/) (v16+ for frontend development)
+- [Python](https://www.python.org/) (3.8+ for backend development)
+- [Google API Key](https://ai.google.dev/) with Gemini API access
 
-### Quick Start 🏃‍♂️
+## 🛠️ Setup Instructions
 
-1. **Clone the Repository**
+### 1. Clone the Repository
+
 ```bash
 git clone https://github.com/yourusername/OCRGenie.git
 cd OCRGenie
 ```
 
-2. **Install Dependencies**
-```bash
-# Frontend Dependencies
-npm install
+### 2. Environment Setup
 
-# Backend Dependencies
-pip install -r requirements.txt
-```
+#### Backend Setup
 
-## 🔐 Configuration Files Setup
+1. Navigate to the Backend directory:
+   ```bash
+   cd Backend
+   ```
 
-### 1. 🔑 Google Cloud Vision API (`ocrKey.json`)
+2. Create a `.env` file with the following content:
+   ```env
+   # Google Gemini API Key
+   GOOGLE_API_KEY=your_google_api_key_here
+   ```
 
-The magic behind our powerful OCR capabilities! 
+#### Frontend Setup
 
-<details>
-<summary>📝 Setup Instructions</summary>
+1. Navigate to the Frontend directory:
+   ```bash
+   cd ../Frontend
+   ```
 
-1. Visit [Google Cloud Console](https://console.cloud.google.com/)
-2. Create/Select a project
-3. Enable Cloud Vision API
-4. Create service account:
-   - Go to "IAM & Admin" > "Service Accounts"
-   - Click "Create Service Account"
-   - Grant "Cloud Vision API User" role
-   - Download JSON key
-5. Save as `Backend/ocrKey.json`
+2. Create a `.env` file with the following content:
+   ```env
+   # API Configuration
+   VITE_API_BASE_URL=http://localhost:8000
+   
+   # Environment
+   NODE_ENV=development
+   ```
 
-</details>
+## 🐳 Docker Setup (Recommended)
 
-Example `ocrKey.json`:
-```json
-{
-  "type": "service_account",
-  "project_id": "your-project-id",
-  "private_key_id": "your-private-key-id",
-  "private_key": "your-private-key",
-  "client_email": "your-service-account-email",
-  "client_id": "your-client-id",
-  ...
-}
-```
+The easiest way to run OCRGenie is using Docker Compose:
 
-### 2. 📱 Backend Configuration (`config.py`)
+1. Make sure Docker and Docker Compose are installed and running
 
-Power up your backend with Twilio and Gemini! 
+2. Create a `.env` file in the project root with your environment variables:
+   ```env
+   # Google Gemini API Key (required)
+   GOOGLE_API_KEY=your_google_api_key_here
+   VITE_API_BASE_URL=http://localhost:8000
+   ```
 
-<details>
-<summary>🔧 Setup Instructions</summary>
+3. From the project root, you can run the application in different ways:
 
-#### Twilio Setup
-1. Create [Twilio account](https://www.twilio.com/try-twilio)
-2. Get Account SID & Auth Token
-3. Purchase/Select phone number
+   - Using the default `.env` file:
+     ```bash
+     docker-compose up --build
+     ```
+   
+   - Using a custom environment file (e.g., `production.env`):
+     ```bash
+     docker-compose --env-file ./path/to/custom.env up --build
+     ```
 
-#### Gemini Setup
-1. Visit [Google AI Studio](https://makersuite.google.com/app/apikey)
-2. Generate API key
+   This will:
+   - Build and start both frontend and backend services
+   - Mount your local code for development
+   - Use the environment variables from your specified `.env` file
 
-</details>
+4. The application will be available at:
+   - Frontend: http://localhost:3000
+   - Backend API: http://localhost:8000
+   - API Docs: http://localhost:8000/docs
 
-Create `Backend/config/config.py`:
-```python
-# Twilio Magic ✨
-account_sid_key = 'your_account_sid'
-auth_token_key = 'your_auth_token'
-twilio_number_key = 'your_twilio_phone_number'
+### Docker Environment Variables
 
-# Gemini Power 🤖
-GEMINI_API_KEY = "your-gemini-api-key-here"
-```
+All environment variables from the root `.env` file are automatically loaded into the backend container. The frontend can access these variables during build time if they are prefixed with `VITE_`.
 
-### 3. 🎨 Frontend Configuration (`GemKey.js`)
+To add new environment variables:
+1. Add them to your `.env` file
+2. Reference them in your application code using `os.getenv('VARIABLE_NAME')` (Python) or `import.meta.env.VITE_VARIABLE_NAME` (JavaScript/React)
+3. Rebuild your containers with `docker-compose up --build`
 
-Enable AI-powered features in your frontend!
+## 🚀 Manual Setup (Development)
 
-Create `src/Config/GemKey.js`:
-```javascript
-export const GEM_KEY = "your-gemini-api-key-here";
-```
+### Backend
 
-## 🛡️ Security Best Practices
+1. Navigate to the Backend directory:
+   ```bash
+   cd Backend
+   ```
 
-⚠️ **Keep Your Magic Safe!**
+2. Create and activate a virtual environment:
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
 
-- 🚫 Never commit credentials to version control
-- 📝 Add to `.gitignore`:
-  ```bash
-  Backend/ocrKey.json
-  Backend/config/config.py
-  src/Config/GemKey.js
-  ```
-- 🔄 Rotate keys periodically
-- 👮‍♂️ Use principle of least privilege
-- 📊 Monitor API usage
-- 🌍 Use environment variables in production
+3. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-## 🔧 Environment Setup
+4. Run the backend server:
+   ```bash
+   uvicorn main:app --reload --host 0.0.0.0 --port 8000
+   ```
 
-### Directory Structure
-```
-OCRGenie/
-├── Backend/
-│   ├── config/
-│   │   └── config.py
-│   └── ocrKey.json
-└── src/
-    └── Config/
-        └── GemKey.js
-```
+### Frontend
 
-### Quick Setup Commands
-```bash
-# Create directories 📁
-mkdir -p Backend/config src/Config
+1. Navigate to the Frontend directory:
+   ```bash
+   cd Frontend
+   ```
 
-# Setup configuration files 📝
-cp path/to/your/downloaded/key.json Backend/ocrKey.json
-touch Backend/config/config.py
-touch src/Config/GemKey.js
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-# Protect your secrets 🔒
-echo "Backend/ocrKey.json" >> .gitignore
-echo "Backend/config/config.py" >> .gitignore
-echo "src/Config/GemKey.js" >> .gitignore
-```
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
 
-## ✅ Verification Checklist
+4. The frontend will be available at http://localhost:3000
 
-- [ ] All configuration files exist in correct locations
-- [ ] File permissions are set correctly
-- [ ] `ocrKey.json` structure is valid
-- [ ] `config.py` contains all credentials
-- [ ] `GemKey.js` exports correctly
-- [ ] `.gitignore` is properly configured
+## 🌐 Environment Variables Reference
 
-## 🔍 Troubleshooting Guide
+### Backend (.env)
 
-### Common Issues & Solutions
+| Variable | Description | Required | Default |
+|----------|-------------|----------|---------|
+| `GOOGLE_API_KEY` | Your Google Gemini API key | Yes | - |
+| `PORT` | Port to run the backend server | No | 8000 |
+| `HOST` | Host to bind the server | No | 0.0.0.0 |
+| `DEBUG` | Enable debug mode | No | False |
+| `ALLOWED_ORIGINS` | Comma-separated list of allowed CORS origins | No | http://localhost:3000 |
 
-#### 🚨 File Not Found
-- Verify directory structure
-- Check file names and paths
-- Ensure proper file creation
+### Frontend (.env)
 
-#### 🔒 Permission Issues
-- Check file permissions
-- Verify user access rights
+| Variable | Description | Required | Default |
+|----------|-------------|----------|---------|
+| `VITE_API_BASE_URL` | Base URL for API requests | No | http://localhost:8000 |
+| `NODE_ENV` | Node environment | No | development |
 
-#### 🌐 API Errors
-- Validate API keys
-- Check service status
-- Verify account activation
+## 🤝 Contributing
 
-#### 📦 Import Issues
-- Confirm Python path
-- Check ES6 import syntax
-- Verify module installation
+1. Fork the repository
+2. Create a new branch: `git checkout -b feature/your-feature`
+3. Make your changes and commit: `git commit -am 'Add some feature'`
+4. Push to the branch: `git push origin feature/your-feature`
+5. Create a Pull Request
 
-#### 📱 Twilio Setup
-- Check phone number format
-- Verify account status
-- Monitor credit balance
+## 📄 License
 
-## 🤝 Need Help?
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-- 📖 Check our [Documentation](docs/README.md)
-- 🐛 [Report a bug](../../issues)
-- 💡 [Request a feature](../../issues)
-- 💬 [Ask a question](../../discussions)
+## 🙏 Acknowledgments
+
+- [Google Gemini](https://ai.google.dev/) - For the powerful AI models
+- [FastAPI](https://fastapi.tiangolo.com/) - For the amazing Python web framework
+- [React](https://reactjs.org/) - For the frontend library
+- [Docker](https://www.docker.com/) - For containerization
 
 ---
 
 <div align="center">
-
-Made with ❤️ by the OCRGenie Team
-
-[⬆ Back to top](#ocrgenie-)
-
+  Made with ❤️ by Your Name
 </div>
