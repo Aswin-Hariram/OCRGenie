@@ -10,6 +10,9 @@
   </p>
 </div>
 
+
+<img width="1449" alt="Screenshot 2025-05-27 at 12 03 31 PM" src="https://github.com/user-attachments/assets/2579236f-a5e1-4a98-8c6c-6437859de7ec" />
+
 OCRGenie is a powerful document processing application that extracts text from images using Google's Gemini AI. It provides a user-friendly interface for uploading documents and receiving accurate text extraction results in real-time.
 
 ## 🚀 Features
