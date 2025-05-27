@@ -96,7 +96,7 @@ function DND() {
           const fileExtension = file.name.split('.').pop().toLowerCase();
           
           // Call the backend API
-          const response = await fetch('http://localhost:8000/api/ocr', {
+          const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/ocr`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
